@@ -1,3 +1,5 @@
+![](logo.png)
+
 # TinyLua
 
 Compilador de um subconjunto de Lua para microcontroladores, com foco inicial em AVR (Arduino) e suporte planejado para ESP32.
