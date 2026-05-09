@@ -1,0 +1,10 @@
+[workspace]
+resolver = "2"
+
+members = [
+    "crates/tinylua-lexer",
+    "crates/tinylua-parser",
+    "crates/tinylua-sema",
+    "crates/tinylua-codegen",
+    "crates/tinylua-hal",
+]

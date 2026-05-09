@@ -1,0 +1,1 @@
+/Users/cleuton/Documents/projetos/tinylua/target/debug/libtinylua_sema.rlib: /Users/cleuton/Documents/projetos/tinylua/tinylua-lexer/src/lib.rs /Users/cleuton/Documents/projetos/tinylua/tinylua-parser/src/lib.rs /Users/cleuton/Documents/projetos/tinylua/tinylua-sema/src/lib.rs

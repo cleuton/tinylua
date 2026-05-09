@@ -1,0 +1,7 @@
+[package]
+name = "tinylua-hal"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tinylua-codegen = { path = "../tinylua-codegen" }
