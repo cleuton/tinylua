@@ -5,3 +5,4 @@ edition = "2021"
 
 [dependencies]
 tinylua-lexer = { path = "../tinylua-lexer" }
+typed-arena   = "2"
