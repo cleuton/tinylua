@@ -6,6 +6,7 @@ version = 4
 name = "tinylua-codegen"
 version = "0.1.0"
 dependencies = [
+ "tinylua-parser",
  "tinylua-sema",
 ]
 

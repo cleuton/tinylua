@@ -1,27 +1,112 @@
-   0.004862458s  INFO prepare_target{force=false package_id=tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen) target="tinylua_codegen"}: cargo::core::compiler::fingerprint: stale: changed "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-parser/src/lib.rs"
-   0.004874250s  INFO prepare_target{force=false package_id=tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen) target="tinylua_codegen"}: cargo::core::compiler::fingerprint:           (vs) "/Users/cleuton/Documents/projetos/tinylua/target/debug/.fingerprint/tinylua-parser-bdf72dad60e2df5c/dep-lib-tinylua_parser"
-   0.004876916s  INFO prepare_target{force=false package_id=tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen) target="tinylua_codegen"}: cargo::core::compiler::fingerprint:                FileTime { seconds: 1778449678, nanos: 575765627 } < FileTime { seconds: 1778450629, nanos: 997375132 }
-   0.005329125s  INFO prepare_target{force=false package_id=tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen) target="tinylua_codegen"}: cargo::core::compiler::fingerprint: fingerprint dirty for tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("tinylua_codegen", ["lib"], "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen/src/lib.rs", Edition2021) }
-   0.005365708s  INFO prepare_target{force=false package_id=tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen) target="tinylua_codegen"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleDepFingerprint { name: "tinylua_sema" })
-   0.005786000s  INFO prepare_target{force=false package_id=tinylua-sema v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema) target="tinylua_sema"}: cargo::core::compiler::fingerprint: fingerprint dirty for tinylua-sema v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("tinylua_sema", ["lib"], "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema/src/lib.rs", Edition2021) }
-   0.005792166s  INFO prepare_target{force=false package_id=tinylua-sema v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema) target="tinylua_sema"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleDepFingerprint { name: "tinylua_parser" })
-   0.005970541s  INFO prepare_target{force=false package_id=tinylua-parser v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-parser) target="tinylua_parser"}: cargo::core::compiler::fingerprint: fingerprint dirty for tinylua-parser v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-parser)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("tinylua_parser", ["lib"], "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-parser/src/lib.rs", Edition2021) }
-   0.005974833s  INFO prepare_target{force=false package_id=tinylua-parser v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-parser) target="tinylua_parser"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleItem(ChangedFile { reference: "/Users/cleuton/Documents/projetos/tinylua/target/debug/.fingerprint/tinylua-parser-bdf72dad60e2df5c/dep-lib-tinylua_parser", reference_mtime: FileTime { seconds: 1778449678, nanos: 575765627 }, stale: "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-parser/src/lib.rs", stale_mtime: FileTime { seconds: 1778450629, nanos: 997375132 } }))
-   0.006433791s  INFO prepare_target{force=false package_id=tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen) target="tinylua_codegen"}: cargo::core::compiler::fingerprint: fingerprint dirty for tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("tinylua_codegen", ["lib"], "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen/src/lib.rs", Edition2021) }
-   0.006437708s  INFO prepare_target{force=false package_id=tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen) target="tinylua_codegen"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleDepFingerprint { name: "tinylua_sema" })
-   0.006588625s  INFO prepare_target{force=false package_id=tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal) target="tinylua_hal"}: cargo::core::compiler::fingerprint: fingerprint dirty for tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("tinylua_hal", ["lib"], "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal/src/lib.rs", Edition2021) }
-   0.006592500s  INFO prepare_target{force=false package_id=tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal) target="tinylua_hal"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleDepFingerprint { name: "tinylua_codegen" })
-   0.006735791s  INFO prepare_target{force=false package_id=tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal) target="tinylua_hal"}: cargo::core::compiler::fingerprint: fingerprint dirty for tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("tinylua_hal", ["lib"], "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal/src/lib.rs", Edition2021) }
-   0.006739250s  INFO prepare_target{force=false package_id=tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal) target="tinylua_hal"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleDepFingerprint { name: "tinylua_codegen" })
-   0.006988375s  INFO prepare_target{force=false package_id=tinylua-parser v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-parser) target="tinylua_parser"}: cargo::core::compiler::fingerprint: stale: changed "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-parser/src/lib.rs"
-   0.006990458s  INFO prepare_target{force=false package_id=tinylua-parser v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-parser) target="tinylua_parser"}: cargo::core::compiler::fingerprint:           (vs) "/Users/cleuton/Documents/projetos/tinylua/target/debug/.fingerprint/tinylua-parser-ac8ad1aafedc7543/dep-test-lib-tinylua_parser"
-   0.006992166s  INFO prepare_target{force=false package_id=tinylua-parser v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-parser) target="tinylua_parser"}: cargo::core::compiler::fingerprint:                FileTime { seconds: 1778449678, nanos: 575796304 } < FileTime { seconds: 1778450629, nanos: 997375132 }
-   0.007077083s  INFO prepare_target{force=false package_id=tinylua-parser v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-parser) target="tinylua_parser"}: cargo::core::compiler::fingerprint: fingerprint dirty for tinylua-parser v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-parser)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("tinylua_parser", ["lib"], "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-parser/src/lib.rs", Edition2021) }
-   0.007080625s  INFO prepare_target{force=false package_id=tinylua-parser v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-parser) target="tinylua_parser"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleItem(ChangedFile { reference: "/Users/cleuton/Documents/projetos/tinylua/target/debug/.fingerprint/tinylua-parser-ac8ad1aafedc7543/dep-test-lib-tinylua_parser", reference_mtime: FileTime { seconds: 1778449678, nanos: 575796304 }, stale: "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-parser/src/lib.rs", stale_mtime: FileTime { seconds: 1778450629, nanos: 997375132 } }))
-   0.007232000s  INFO prepare_target{force=false package_id=tinylua-sema v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema) target="tinylua_sema"}: cargo::core::compiler::fingerprint: fingerprint dirty for tinylua-sema v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("tinylua_sema", ["lib"], "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema/src/lib.rs", Edition2021) }
-   0.007235291s  INFO prepare_target{force=false package_id=tinylua-sema v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema) target="tinylua_sema"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleDepFingerprint { name: "tinylua_parser" })
-    Checking tinylua-parser v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-parser)
+   0.005491584s  INFO prepare_target{force=false package_id=tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen) target="tinylua_codegen"}: cargo::core::compiler::fingerprint: dependency on `tinylua_parser` is newer than we are 1778795569.415308755s > 1778449678.629189471s "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema"
+   0.005551834s  INFO prepare_target{force=false package_id=tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen) target="tinylua_codegen"}: cargo::core::compiler::fingerprint: fingerprint error for tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("tinylua_codegen", ["lib"], "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen/src/lib.rs", Edition2021) }
+   0.005759334s  INFO prepare_target{force=false package_id=tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen) target="tinylua_codegen"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/cleuton/Documents/projetos/tinylua/target/debug/.fingerprint/tinylua-codegen-eba68964f15d7a29/lib-tinylua_codegen`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: std::backtrace::Backtrace::capture
+   2: cargo_util::paths::read_bytes
+   3: cargo_util::paths::read
+   4: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   5: cargo::core::compiler::fingerprint::prepare_target
+   6: cargo::core::compiler::compile
+   7: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   8: cargo::ops::cargo_compile::compile_ws
+   9: cargo::ops::cargo_compile::compile_with_exec
+  10: cargo::ops::cargo_compile::compile
+  11: cargo::commands::check::exec
+  12: <cargo::cli::Exec>::exec
+  13: cargo::main
+  14: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  15: std::rt::lang_start::<()>::{closure#0}
+  16: std::rt::lang_start_internal
+  17: _main
+   0.015612209s  INFO prepare_target{force=false package_id=tinylua-sema v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema) target="tinylua_sema"}: cargo::core::compiler::fingerprint: fingerprint dirty for tinylua-sema v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("tinylua_sema", ["lib"], "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema/src/lib.rs", Edition2021) }
+   0.015619709s  INFO prepare_target{force=false package_id=tinylua-sema v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema) target="tinylua_sema"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleDependency { name: "tinylua_parser", dep_mtime: FileTime { seconds: 1778795569, nanos: 415308755 }, max_mtime: FileTime { seconds: 1778449678, nanos: 629189471 } })
+   0.016072792s  INFO prepare_target{force=false package_id=tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen) target="tinylua_codegen"}: cargo::core::compiler::fingerprint: fingerprint error for tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("tinylua_codegen", ["lib"], "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen/src/lib.rs", Edition2021) }
+   0.016079167s  INFO prepare_target{force=false package_id=tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen) target="tinylua_codegen"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/cleuton/Documents/projetos/tinylua/target/debug/.fingerprint/tinylua-codegen-637b06cbe9615469/test-lib-tinylua_codegen`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: std::backtrace::Backtrace::capture
+   2: cargo_util::paths::read_bytes
+   3: cargo_util::paths::read
+   4: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   5: cargo::core::compiler::fingerprint::prepare_target
+   6: cargo::core::compiler::compile
+   7: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   8: cargo::ops::cargo_compile::compile_ws
+   9: cargo::ops::cargo_compile::compile_with_exec
+  10: cargo::ops::cargo_compile::compile
+  11: cargo::commands::check::exec
+  12: <cargo::cli::Exec>::exec
+  13: cargo::main
+  14: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  15: std::rt::lang_start::<()>::{closure#0}
+  16: std::rt::lang_start_internal
+  17: _main
+   0.016288459s  INFO prepare_target{force=false package_id=tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal) target="tinylua_hal"}: cargo::core::compiler::fingerprint: fingerprint error for tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("tinylua_hal", ["lib"], "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal/src/lib.rs", Edition2021) }
+   0.016292917s  INFO prepare_target{force=false package_id=tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal) target="tinylua_hal"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/cleuton/Documents/projetos/tinylua/target/debug/.fingerprint/tinylua-hal-6aca2f88227db22f/lib-tinylua_hal`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: std::backtrace::Backtrace::capture
+   2: cargo_util::paths::read_bytes
+   3: cargo_util::paths::read
+   4: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   5: cargo::core::compiler::fingerprint::prepare_target
+   6: cargo::core::compiler::compile
+   7: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   8: cargo::ops::cargo_compile::compile_ws
+   9: cargo::ops::cargo_compile::compile_with_exec
+  10: cargo::ops::cargo_compile::compile
+  11: cargo::commands::check::exec
+  12: <cargo::cli::Exec>::exec
+  13: cargo::main
+  14: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  15: std::rt::lang_start::<()>::{closure#0}
+  16: std::rt::lang_start_internal
+  17: _main
+   0.016435209s  INFO prepare_target{force=false package_id=tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal) target="tinylua_hal"}: cargo::core::compiler::fingerprint: fingerprint error for tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("tinylua_hal", ["lib"], "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal/src/lib.rs", Edition2021) }
+   0.016439000s  INFO prepare_target{force=false package_id=tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal) target="tinylua_hal"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/cleuton/Documents/projetos/tinylua/target/debug/.fingerprint/tinylua-hal-95618976029ed054/test-lib-tinylua_hal`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: std::backtrace::Backtrace::capture
+   2: cargo_util::paths::read_bytes
+   3: cargo_util::paths::read
+   4: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   5: cargo::core::compiler::fingerprint::prepare_target
+   6: cargo::core::compiler::compile
+   7: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   8: cargo::ops::cargo_compile::compile_ws
+   9: cargo::ops::cargo_compile::compile_with_exec
+  10: cargo::ops::cargo_compile::compile
+  11: cargo::commands::check::exec
+  12: <cargo::cli::Exec>::exec
+  13: cargo::main
+  14: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  15: std::rt::lang_start::<()>::{closure#0}
+  16: std::rt::lang_start_internal
+  17: _main
+   0.016803417s  INFO prepare_target{force=false package_id=tinylua-sema v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema) target="tinylua_sema"}: cargo::core::compiler::fingerprint: stale: changed "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema/src/lib.rs"
+   0.016805709s  INFO prepare_target{force=false package_id=tinylua-sema v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema) target="tinylua_sema"}: cargo::core::compiler::fingerprint:           (vs) "/Users/cleuton/Documents/projetos/tinylua/target/debug/.fingerprint/tinylua-sema-daef1ba5f354d897/dep-test-lib-tinylua_sema"
+   0.016807292s  INFO prepare_target{force=false package_id=tinylua-sema v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema) target="tinylua_sema"}: cargo::core::compiler::fingerprint:                FileTime { seconds: 1778795569, nanos: 424089684 } < FileTime { seconds: 1778796344, nanos: 950891528 }
+   0.016889250s  INFO prepare_target{force=false package_id=tinylua-sema v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema) target="tinylua_sema"}: cargo::core::compiler::fingerprint: fingerprint dirty for tinylua-sema v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("tinylua_sema", ["lib"], "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema/src/lib.rs", Edition2021) }
+   0.016893042s  INFO prepare_target{force=false package_id=tinylua-sema v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema) target="tinylua_sema"}: cargo::core::compiler::fingerprint:     dirty: FsStatusOutdated(StaleItem(ChangedFile { reference: "/Users/cleuton/Documents/projetos/tinylua/target/debug/.fingerprint/tinylua-sema-daef1ba5f354d897/dep-test-lib-tinylua_sema", reference_mtime: FileTime { seconds: 1778795569, nanos: 424089684 }, stale: "/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema/src/lib.rs", stale_mtime: FileTime { seconds: 1778796344, nanos: 950891528 } }))
     Checking tinylua-sema v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-sema)
     Checking tinylua-codegen v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-codegen)
     Checking tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.33s
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.34s

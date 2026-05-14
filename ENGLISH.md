@@ -17,7 +17,7 @@ A compiler for a subset of Lua targeting microcontrollers, with an initial focus
 | 1 | Lexer + Tokens | ✅ Done |
 | 2 | Parser + AST | ✅ Done |
 | 3 | Semantic Analysis | ✅ Done |
-| 4 | Rust `no_std` Code Generator | ⏳ Pending |
+| 4 | Rust `no_std` Code Generator | ✅ Done |
 | 3a | AVR HAL Integration | ⏳ Pending |
 | 3b | ESP32 HAL Integration | ⏳ Future |
 
@@ -30,7 +30,7 @@ crates/
 ├── tinylua-lexer    ← implemented (Phase 1)
 ├── tinylua-parser   ← implemented (Phase 2)
 ├── tinylua-sema     ← implemented (Phase 3)
-├── tinylua-codegen  ← placeholder (Phase 4)
+├── tinylua-codegen  ← implemented (Phase 4)
 └── tinylua-hal      ← placeholder (Phase 3a)
 ```
 
@@ -257,10 +257,127 @@ cargo test -p tinylua-sema
 
 ---
 
+## tinylua-codegen
+
+The transpiler that walks the sema-validated AST and emits `no_std` Rust source ready to compile with `rustc` targeting AVR or ESP32.
+
+### API
+
+```rust
+use tinylua_codegen::{generate, CodegenConfig};
+use tinylua_sema::Target;
+
+let config = CodegenConfig { target: Target::Avr };
+let rust_src: String = generate(&stmts, &sema_out, &config);
+```
+
+### Generated file structure
+
+```rust
+#![no_std]
+#![no_main]
+use tinylua_hal as hal;
+
+// user functions (Stmt::Function) — before main
+
+#[no_mangle]
+pub extern "C" fn main() -> ! {
+    // program body (remaining statements)
+}
+```
+
+### Lua → Rust mapping
+
+| Lua AST | Generated Rust |
+|---------|---------------|
+| `local x = expr` | `let mut x: i32 = expr;` |
+| `local x` | `let mut x: i32 = 0;` |
+| `x = expr` | `x = expr;` |
+| `while cond do` | `while cond {` |
+| `while true do` | `loop {` (satisfies `-> !`) |
+| `for i = s, l do` | `for i in s..=l {` |
+| `for i = s, l, step do` | `while` block with manual increment |
+| `if / elseif / else` | `if / } else if / } else {` |
+| `function f(a, b)` | `fn f(a: i32, b: i32) -> i32 {` |
+| `return expr` | `return expr;` |
+
+### Intrinsics — HAL mapping
+
+| Lua | Rust |
+|-----|------|
+| `digitalRead(pin)` | `hal::digital_read(pin)` |
+| `digitalWrite(pin, val)` | `hal::digital_write(pin, val)` |
+| `analogRead(pin)` | `hal::analog_read(pin)` |
+| `analogWrite(pin, val)` | `hal::analog_write(pin, val as u8)` |
+| `delay(ms)` | `hal::delay_ms(ms as u32)` |
+| `pinMode(pin, "OUTPUT")` | `hal::pin_mode(pin, hal::PinMode::Output)` |
+| `pinMode(pin, "INPUT")` | `hal::pin_mode(pin, hal::PinMode::Input)` |
+
+Casts (`as u8`, `as u32`) are emitted only at the intrinsic call site — all variables are always declared as `i32`.
+
+### Example output — digital-sensor blink
+
+```lua
+-- Lua input
+local LED_PIN = 13
+local SENSOR_PIN = 2
+pinMode(LED_PIN, "OUTPUT")
+while true do
+  local state = digitalRead(SENSOR_PIN)
+  if state == true then
+    digitalWrite(LED_PIN, true)
+    delay(500)
+  else
+    digitalWrite(LED_PIN, false)
+  end
+end
+```
+
+```rust
+// Generated Rust output
+#![no_std]
+#![no_main]
+use tinylua_hal as hal;
+
+#[no_mangle]
+pub extern "C" fn main() -> ! {
+    let mut LED_PIN: i32 = 13;
+    let mut SENSOR_PIN: i32 = 2;
+    hal::pin_mode(LED_PIN, hal::PinMode::Output);
+    loop {
+        let mut state: i32 = hal::digital_read(SENSOR_PIN);
+        if (state == true) {
+            hal::digital_write(LED_PIN, true);
+            hal::delay_ms(500 as u32);
+        } else {
+            hal::digital_write(LED_PIN, false);
+        }
+    }
+}
+```
+
+### Tests — 9 cases
+
+- `local x = 42` → `let mut x: i32 = 42;`
+- `local x` → `let mut x: i32 = 0;`
+- `for i = 1, 10 do end` → `for i in 1..=10 {`
+- `for i = 0, 10, 2 do end` → while with `let mut i`, `while i <= 10`, `i += 2;`
+- `function add(a, b) return a end` → `fn add` emitted before `fn main`
+- `if / elseif / else` → `if / } else if / } else {`
+- AVR blink → contains `hal::pin_mode`, `hal::digital_read`, `hal::digital_write`, `hal::delay_ms`, `loop {`
+- Analog sensor → contains `hal::analog_read`, `hal::analog_write`, `as u8`, `as u32`
+- Full blink → contains `#![no_std]`, `#![no_main]`, `use tinylua_hal as hal;`, `pub extern "C" fn main() -> !`
+
+```
+cargo test -p tinylua-codegen
+```
+
+---
+
 ## Running all tests
 
 ```
 cargo test --workspace
 ```
 
-Current result: **96 tests, 0 failures.**
+Current result: **104 tests, 0 failures.**
