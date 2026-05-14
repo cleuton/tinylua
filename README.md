@@ -16,7 +16,7 @@ Compilador de um subconjunto de Lua para microcontroladores, com foco inicial em
 |------|------|--------|
 | 1 | Lexer + Tokens | ✅ Concluído |
 | 2 | Parser + AST | ✅ Concluído |
-| 3 | Análise Semântica | ⏳ Pendente |
+| 3 | Análise Semântica | ✅ Concluído |
 | 4 | Gerador Rust `no_std` | ⏳ Pendente |
 | 3a | Integração HAL AVR | ⏳ Pendente |
 | 3b | Integração HAL ESP32 | ⏳ Futuro |
@@ -29,7 +29,7 @@ Compilador de um subconjunto de Lua para microcontroladores, com foco inicial em
 crates/
 ├── tinylua-lexer    ← implementado (Fase 1)
 ├── tinylua-parser   ← implementado (Fase 2)
-├── tinylua-sema     ← placeholder  (Fase 3)
+├── tinylua-sema     ← implementado (Fase 3)
 ├── tinylua-codegen  ← placeholder  (Fase 4)
 └── tinylua-hal      ← placeholder  (Fase 3a)
 ```
@@ -186,10 +186,81 @@ cargo test -p tinylua-parser
 
 ---
 
+## tinylua-sema
+
+Análise semântica que consome a AST do parser e valida o programa Lua antes da geração de código. Acumula **todos** os erros sem early-return — o usuário vê a lista completa de problemas de uma só vez.
+
+### API
+
+```rust
+use tinylua_sema::{analyse, SemaConfig, Target};
+
+let config = SemaConfig { target: Target::Avr };
+let out = analyse(&stmts, &config);
+
+for err in &out.errors {
+    eprintln!("{err}"); // "erro[linha:col]: mensagem"
+}
+// out.expr_types: HashMap<usize, TinyType> — tipo inferido de cada nó Expr
+```
+
+### Tipos
+
+```rust
+pub enum TinyType { Int, Float, Bool, Str, Nil }
+```
+
+### Regras implementadas
+
+| # | Regra | Mensagem de erro |
+|---|-------|-----------------|
+| 1 | `LitFloat` com `target == Avr` | `"ponto flutuante não é suportado no target AVR (linha:col)"` |
+| 2 | `local x` sem init → tipo `Nil`; uso em expressão | `"variável 'x' usada antes de ser inicializada"` |
+| 3 | Variável não presente em nenhum frame do escopo | `"variável 'x' não declarada"` |
+| 4 | Parâmetros de função | registrados com tipo `Int` por padrão |
+| 5 | Recursão direta no corpo de uma função | `"recursão não é suportada na PoC (função 'f')"` |
+| 6 | `return` no nível superior | aceito sem erro |
+| 7 | Aridade de intrínseca | `"'delay' espera 1 argumento, recebeu 2"` |
+| 8 | Tipo de argumento de intrínseca | `"argumento 1 de 'digitalWrite' deve ser Bool, recebeu Int"` |
+
+### Intrínsecas reconhecidas
+
+| Lua | Parâmetros | Retorno |
+|-----|-----------|---------|
+| `digitalRead(pin)` | `Int` | `Bool` |
+| `digitalWrite(pin, val)` | `Int, Bool` | — |
+| `analogRead(pin)` | `Int` | `Int` |
+| `analogWrite(pin, val)` | `Int, Int` | — |
+| `delay(ms)` | `Int` | — |
+| `pinMode(pin, mode)` | `Int, Str` | — |
+
+### Escopos
+
+`push/pop` por bloco: `while`, `if/elseif/else`, `for` numérico (variável de loop com tipo `Int`), `function` (parâmetros com tipo `Int`). Atribuição a variável com tipo `Nil` dentro de um escopo interno promove o tipo no frame externo onde a variável foi declarada.
+
+### Testes — 10 casos
+
+- Float em AVR → erro com span correto na linha 1
+- Float em ESP32 → sem erro
+- Variável não declarada
+- Variável usada antes de init (`local x` sem valor)
+- Recursão direta proibida
+- `delay("texto")` → erro de tipo no argumento 1
+- `delay(1, 2)` → erro de aridade
+- Exemplo completo do blink com sensor digital (AVR) → 0 erros
+- Exemplo do sensor analógico com PWM (ESP32) → 0 erros
+- `local x` inicializado dentro de `if` e usado depois → 0 erros
+
+```
+cargo test -p tinylua-sema
+```
+
+---
+
 ## Rodando todos os testes
 
 ```
 cargo test --workspace
 ```
 
-Resultado atual: **86 testes, 0 falhas.**
+Resultado atual: **96 testes, 0 falhas.**

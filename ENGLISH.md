@@ -16,7 +16,7 @@ A compiler for a subset of Lua targeting microcontrollers, with an initial focus
 |-------|------|--------|
 | 1 | Lexer + Tokens | ✅ Done |
 | 2 | Parser + AST | ✅ Done |
-| 3 | Semantic Analysis | ⏳ Pending |
+| 3 | Semantic Analysis | ✅ Done |
 | 4 | Rust `no_std` Code Generator | ⏳ Pending |
 | 3a | AVR HAL Integration | ⏳ Pending |
 | 3b | ESP32 HAL Integration | ⏳ Future |
@@ -29,7 +29,7 @@ A compiler for a subset of Lua targeting microcontrollers, with an initial focus
 crates/
 ├── tinylua-lexer    ← implemented (Phase 1)
 ├── tinylua-parser   ← implemented (Phase 2)
-├── tinylua-sema     ← placeholder (Phase 3)
+├── tinylua-sema     ← implemented (Phase 3)
 ├── tinylua-codegen  ← placeholder (Phase 4)
 └── tinylua-hal      ← placeholder (Phase 3a)
 ```
@@ -186,10 +186,81 @@ cargo test -p tinylua-parser
 
 ---
 
+## tinylua-sema
+
+Semantic analysis phase that consumes the parser's AST and validates the Lua program before code generation. It accumulates **all** errors without early-return — the user sees the complete list of issues at once.
+
+### API
+
+```rust
+use tinylua_sema::{analyse, SemaConfig, Target};
+
+let config = SemaConfig { target: Target::Avr };
+let out = analyse(&stmts, &config);
+
+for err in &out.errors {
+    eprintln!("{err}"); // "erro[line:col]: message"
+}
+// out.expr_types: HashMap<usize, TinyType> — inferred type of each Expr node
+```
+
+### Types
+
+```rust
+pub enum TinyType { Int, Float, Bool, Str, Nil }
+```
+
+### Implemented rules
+
+| # | Rule | Error message |
+|---|------|---------------|
+| 1 | `LitFloat` with `target == Avr` | `"ponto flutuante não é suportado no target AVR (line:col)"` |
+| 2 | `local x` without init → type `Nil`; used in expression | `"variável 'x' usada antes de ser inicializada"` |
+| 3 | Variable not present in any scope frame | `"variável 'x' não declarada"` |
+| 4 | Function parameters | registered with type `Int` by default |
+| 5 | Direct recursion inside a function body | `"recursão não é suportada na PoC (função 'f')"` |
+| 6 | `return` at the top level | accepted without error |
+| 7 | Intrinsic arity mismatch | `"'delay' espera 1 argumento, recebeu 2"` |
+| 8 | Intrinsic argument type mismatch | `"argumento 1 de 'digitalWrite' deve ser Bool, recebeu Int"` |
+
+### Recognized intrinsics
+
+| Lua | Parameters | Return |
+|-----|-----------|--------|
+| `digitalRead(pin)` | `Int` | `Bool` |
+| `digitalWrite(pin, val)` | `Int, Bool` | — |
+| `analogRead(pin)` | `Int` | `Int` |
+| `analogWrite(pin, val)` | `Int, Int` | — |
+| `delay(ms)` | `Int` | — |
+| `pinMode(pin, mode)` | `Int, Str` | — |
+
+### Scopes
+
+`push/pop` per block: `while`, `if/elseif/else`, numeric `for` (loop variable typed `Int`), `function` (parameters typed `Int`). Assigning to a `Nil`-typed variable inside an inner scope promotes its type in the outer frame where it was declared.
+
+### Tests — 10 cases
+
+- Float on AVR → error with correct span at line 1
+- Float on ESP32 → no error
+- Undeclared variable
+- Variable used before initialization (`local x` without a value)
+- Direct recursion is rejected
+- `delay("text")` → argument 1 type error
+- `delay(1, 2)` → arity error
+- Full digital-sensor blink example (AVR) → 0 errors
+- Analog sensor with PWM example (ESP32) → 0 errors
+- `local x` initialized inside an `if` block and used afterwards → 0 errors
+
+```
+cargo test -p tinylua-sema
+```
+
+---
+
 ## Running all tests
 
 ```
 cargo test --workspace
 ```
 
-Current result: **86 tests, 0 failures.**
+Current result: **96 tests, 0 failures.**
