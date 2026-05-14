@@ -8,18 +8,108 @@ A compiler for a subset of Lua targeting microcontrollers, with an initial focus
 
 ---
 
+## Prerequisites
+
+### macOS
+
+```bash
+brew tap osx-cross/avr
+brew install avr-gcc
+brew install avrdude
+```
+
+Verify the installation:
+
+```bash
+avr-gcc --version
+avrdude -v 2>&1 | head -1
+```
+
+### Linux (Ubuntu/Debian)
+
+```bash
+sudo apt update
+sudo apt install gcc-avr avrdude
+```
+
+Verify the installation:
+
+```bash
+avr-gcc --version
+avrdude -v 2>&1 | head -1
+```
+
+### Rust toolchain configuration
+
+Create `rust-toolchain.toml` at the project root:
+
+```toml
+[toolchain]
+channel = "nightly"
+components = ["rust-src"]
+```
+
+And `.cargo/config.toml`:
+
+```toml
+[build]
+target = "avr-none"
+
+[target.avr-none]
+linker = "avr-gcc"
+rustflags = [
+    "-C", "target-cpu=atmega328p",
+    "-C", "link-arg=-mmcu=atmega328p",
+]
+
+[unstable]
+build-std = ["core"]
+```
+
+To compile the HAL for AVR (validates the toolchain):
+
+```bash
+cargo +nightly build --target avr-none -Z build-std=core -p tinylua-hal
+```
+
+> **Note:** `avr-unknown-gnu-atmega328` is not a built-in Rust target. The correct target is `avr-none` with `-C target-cpu=atmega328p`. The `-Z build-std=core` flag compiles `core` from source, since no precompiled `rust-std` exists for AVR.
+
+---
+
 ## Status
 
 **PoC 3.0 — Lua → Rust `no_std` transpiler**
 
 | Phase | Name | Status |
 |-------|------|--------|
-| 1 | Lexer + Tokens | ✅ Done |
-| 2 | Parser + AST | ✅ Done |
-| 3 | Semantic Analysis | ✅ Done |
-| 4 | Rust `no_std` Code Generator | ✅ Done |
-| 3a | AVR HAL Integration | ⏳ Pending |
-| 3b | ESP32 HAL Integration | ⏳ Future |
+| 1 | Lexer + Tokens | ✅ Done (53 tests) |
+| 2 | Parser + AST | ✅ Done (86 tests) |
+| 3 | Semantic Analysis | ✅ Done (9 tests) |
+| 4 | Rust `no_std` Generator | ✅ Done (8 tests) |
+| 3a | AVR HAL (ATmega328P) | ✅ Compiles for AVR — physical test pending |
+| 3b | ESP32 HAL | ⏳ Future |
+
+---
+
+## Full Pipeline
+
+The `Lua → Rust no_std` pipeline is functional end to end:
+
+```
+file.lua → Lexer → Parser → Sema → Codegen → file.rs → avr-gcc → .hex
+```
+
+To compile a Lua program for AVR:
+
+```bash
+# 1. Generate .rs from .lua (via tinylua-codegen)
+cargo run -- input.lua -o output.rs
+
+# 2. Compile .rs for AVR
+cargo +nightly build -Z build-std=core --target avr-none --release
+```
+
+> Physical test (upload to Arduino via `avrdude`) is pending.
 
 ---
 

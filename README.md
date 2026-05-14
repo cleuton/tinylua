@@ -8,18 +8,108 @@ Compilador de um subconjunto de Lua para microcontroladores, com foco inicial em
 
 ---
 
+## Pré-requisitos
+
+### macOS
+
+```bash
+brew tap osx-cross/avr
+brew install avr-gcc
+brew install avrdude
+```
+
+Verifique a instalação:
+
+```bash
+avr-gcc --version
+avrdude -v 2>&1 | head -1
+```
+
+### Linux (Ubuntu/Debian)
+
+```bash
+sudo apt update
+sudo apt install gcc-avr avrdude
+```
+
+Verifique a instalação:
+
+```bash
+avr-gcc --version
+avrdude -v 2>&1 | head -1
+```
+
+### Configuração do toolchain Rust
+
+Crie `rust-toolchain.toml` na raiz do projeto:
+
+```toml
+[toolchain]
+channel = "nightly"
+components = ["rust-src"]
+```
+
+E `.cargo/config.toml`:
+
+```toml
+[build]
+target = "avr-none"
+
+[target.avr-none]
+linker = "avr-gcc"
+rustflags = [
+    "-C", "target-cpu=atmega328p",
+    "-C", "link-arg=-mmcu=atmega328p",
+]
+
+[unstable]
+build-std = ["core"]
+```
+
+Para compilar o HAL para AVR (valida o toolchain):
+
+```bash
+cargo +nightly build --target avr-none -Z build-std=core -p tinylua-hal
+```
+
+> **Nota:** `avr-unknown-gnu-atmega328` não é um target built-in do Rust. O target correto é `avr-none` com `-C target-cpu=atmega328p`. A flag `-Z build-std=core` compila `core` a partir do código-fonte, pois não existe `rust-std` pré-compilado para AVR.
+
+---
+
 ## Status
 
 **PoC 3.0 — transpiler Lua → Rust `no_std`**
 
 | Fase | Nome | Status |
 |------|------|--------|
-| 1 | Lexer + Tokens | ✅ Concluído |
-| 2 | Parser + AST | ✅ Concluído |
-| 3 | Análise Semântica | ✅ Concluído |
-| 4 | Gerador Rust `no_std` | ✅ Concluído |
-| 3a | Integração HAL AVR | ⏳ Pendente |
-| 3b | Integração HAL ESP32 | ⏳ Futuro |
+| 1 | Lexer + Tokens | ✅ Concluído (53 testes) |
+| 2 | Parser + AST | ✅ Concluído (86 testes) |
+| 3 | Análise Semântica | ✅ Concluído (9 testes) |
+| 4 | Gerador Rust `no_std` | ✅ Concluído (8 testes) |
+| 3a | HAL AVR (ATmega328P) | ✅ Compila para AVR — teste físico pendente |
+| 3b | HAL ESP32 | ⏳ Futuro |
+
+---
+
+## Pipeline completo
+
+O pipeline `Lua → Rust no_std` está funcional de ponta a ponta:
+
+```
+arquivo.lua → Lexer → Parser → Sema → Codegen → arquivo.rs → avr-gcc → .hex
+```
+
+Para compilar um programa Lua para AVR:
+
+```bash
+# 1. Gerar o .rs a partir do .lua (via tinylua-codegen)
+cargo run -- input.lua -o output.rs
+
+# 2. Compilar o .rs para AVR
+cargo +nightly build -Z build-std=core --target avr-none --release
+```
+
+> O teste físico (upload para Arduino via `avrdude`) está pendente.
 
 ---
 

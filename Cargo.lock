@@ -13,9 +13,6 @@ dependencies = [
 [[package]]
 name = "tinylua-hal"
 version = "0.1.0"
-dependencies = [
- "tinylua-codegen",
-]
 
 [[package]]
 name = "tinylua-lexer"
