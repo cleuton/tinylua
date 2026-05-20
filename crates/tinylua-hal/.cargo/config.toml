@@ -1,0 +1,12 @@
+[build]
+target = "avr-none"
+
+[target.avr-none]
+linker = "avr-gcc"
+rustflags = [
+    "-C", "target-cpu=atmega328p",
+    "-C", "link-arg=-mmcu=atmega328p",
+]
+
+[unstable]
+build-std = ["core"]

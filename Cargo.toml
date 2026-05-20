@@ -7,4 +7,11 @@ members = [
     "crates/tinylua-sema",
     "crates/tinylua-codegen",
     "crates/tinylua-hal",
+    "crates/tinylua-cli",
 ]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"

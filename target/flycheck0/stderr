@@ -1,9 +1,26 @@
-error: failed to run `rustc` to learn about target-specific information
+   0.008683875s  INFO prepare_target{force=false package_id=tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal) target="tinylua-hal"}: cargo::core::compiler::fingerprint: fingerprint error for tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal)/Check { test: true }/TargetInner { name: "tinylua-hal", doc: true, ..: with_path("/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal/src/main.rs", Edition2021) }
+   0.008697875s  INFO prepare_target{force=false package_id=tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal) target="tinylua-hal"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/cleuton/Documents/projetos/tinylua/target/debug/.fingerprint/tinylua-hal-9e328b8fedaf1060/test-bin-tinylua-hal`
 
 Caused by:
-  process didn't exit successfully: `rustc - --crate-name ___ --print=file-names -C link-arg=-mmcu=atmega328p --target avr-unknown-gnu-atmega328 --crate-type bin --crate-type rlib --crate-type dylib --crate-type cdylib --crate-type staticlib --crate-type proc-macro --print=sysroot --print=split-debuginfo --print=crate-name --print=cfg -Wwarnings` (exit status: 1)
-  --- stderr
-  error: error loading target specification: could not find specification for target "avr-unknown-gnu-atmega328"
-    |
-    = help: run `rustc --print target-list` for a list of built-in targets
+    No such file or directory (os error 2)
 
+Stack backtrace:
+   0: <std::backtrace::Backtrace>::create
+   1: cargo_util::paths::read_bytes
+   2: cargo_util::paths::read
+   3: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   4: cargo::core::compiler::fingerprint::prepare_target
+   5: cargo::core::compiler::compile
+   6: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   7: cargo::ops::cargo_compile::compile_ws
+   8: cargo::ops::cargo_compile::compile_with_exec
+   9: cargo::ops::cargo_compile::compile
+  10: cargo::commands::check::exec
+  11: <cargo::cli::Exec>::exec
+  12: cargo::main
+  13: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  14: std::rt::lang_start::<()>::{closure#0}
+  15: std::rt::lang_start_internal
+  16: _main
+    Checking tinylua-hal v0.1.0 (/Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal)
+error: could not compile `tinylua-hal` (bin "tinylua-hal" test) due to 1 previous error

@@ -49,7 +49,18 @@ channel = "nightly"
 components = ["rust-src"]
 ```
 
-E `.cargo/config.toml`:
+`.cargo/config.toml` (raiz do workspace — apenas flags do target, sem build global):
+
+```toml
+[target.avr-none]
+linker = "avr-gcc"
+rustflags = [
+    "-C", "target-cpu=atmega328p",
+    "-C", "link-arg=-mmcu=atmega328p",
+]
+```
+
+`crates/tinylua-hal/.cargo/config.toml` (lido apenas ao compilar a HAL):
 
 ```toml
 [build]
@@ -66,13 +77,16 @@ rustflags = [
 build-std = ["core"]
 ```
 
+Essa separação garante que os crates host (`tinylua-cli`, `tinylua-lexer`, etc.) compilem normalmente para o host sem erros de `String`/`Vec` faltando.
+
 Para compilar o HAL para AVR (valida o toolchain):
 
 ```bash
-cargo +nightly build --target avr-none -Z build-std=core -p tinylua-hal
+cd crates/tinylua-hal
+cargo +nightly build --release
 ```
 
-> **Nota:** `avr-unknown-gnu-atmega328` não é um target built-in do Rust. O target correto é `avr-none` com `-C target-cpu=atmega328p`. A flag `-Z build-std=core` compila `core` a partir do código-fonte, pois não existe `rust-std` pré-compilado para AVR.
+> **Nota:** `avr-unknown-gnu-atmega328` não é um target built-in do Rust. O target correto é `avr-none` com `-C target-cpu=atmega328p`. A flag `build-std = ["core"]` compila `core` a partir do código-fonte, pois não existe `rust-std` pré-compilado para AVR.
 
 ---
 
@@ -86,7 +100,8 @@ cargo +nightly build --target avr-none -Z build-std=core -p tinylua-hal
 | 2 | Parser + AST | ✅ Concluído (86 testes) |
 | 3 | Análise Semântica | ✅ Concluído (9 testes) |
 | 4 | Gerador Rust `no_std` | ✅ Concluído (8 testes) |
-| 3a | HAL AVR (ATmega328P) | ✅ Compila para AVR — teste físico pendente |
+| 3a | HAL AVR (ATmega328P) | ✅ Concluído — testado no Arduino UNO real |
+| CLI | tinylua-cli | ✅ Concluído — pipeline end-to-end |
 | 3b | HAL ESP32 | ⏳ Futuro |
 
 ---
@@ -102,14 +117,26 @@ arquivo.lua → Lexer → Parser → Sema → Codegen → arquivo.rs → avr-gcc
 Para compilar um programa Lua para AVR:
 
 ```bash
-# 1. Gerar o .rs a partir do .lua (via tinylua-codegen)
-cargo run -- input.lua -o output.rs
+# 1. Gerar o .rs a partir do .lua
+cargo run -p tinylua-cli -- blink.lua
+# → grava blink.rs ao lado do blink.lua
 
-# 2. Compilar o .rs para AVR
-cargo +nightly build -Z build-std=core --target avr-none --release
+# 2. Copiar o .rs gerado para o binário da HAL
+cp blink.rs crates/tinylua-hal/src/main.rs
+
+# 3. Compilar para AVR (a partir da pasta da HAL)
+cd crates/tinylua-hal
+cargo +nightly build --release
+cd ../..
+
+# 4. Gerar o arquivo .hex
+avr-objcopy -O ihex -R .eeprom \
+    target/avr-none/release/tinylua-hal.elf blink.hex
+
+# 5. Fazer upload para Arduino UNO (ajuste a porta serial)
+avrdude -c arduino -p atmega328p -P /dev/cu.usbmodem1201 -b 115200 \
+    -U flash:w:blink.hex
 ```
-
-> O teste físico (upload para Arduino via `avrdude`) está pendente.
 
 ---
 
@@ -121,10 +148,64 @@ crates/
 ├── tinylua-parser   ← implementado (Fase 2)
 ├── tinylua-sema     ← implementado (Fase 3)
 ├── tinylua-codegen  ← implementado (Fase 4)
-└── tinylua-hal      ← placeholder  (Fase 3a)
+├── tinylua-hal      ← implementado (Fase 3a)
+└── tinylua-cli      ← CLI do compilador
 ```
 
 Pipeline: `Lexer → Parser → Sema → Codegen → HAL`
+
+---
+
+## tinylua-cli
+
+Interface de linha de comando que executa o pipeline completo (Lexer → Parser → Sema → Codegen) e grava o `.rs` gerado em disco.
+
+### Uso
+
+```
+tinylua-cli <arquivo.lua> [--target avr|esp32]
+```
+
+O target padrão é `avr`. O arquivo `.rs` é gravado ao lado do `.lua` de entrada, com o mesmo nome de base.
+
+### Exemplo — blink.lua
+
+```lua
+-- Acende o LED por 1 segundo, apaga por 1 segundo, repete.
+-- Pino 13 = LED_BUILTIN no Arduino UNO
+
+local LED_PIN = 13
+
+pinMode(LED_PIN, "OUTPUT")
+
+while true do
+    digitalWrite(LED_PIN, true)   -- HIGH
+    delay(1000)
+    digitalWrite(LED_PIN, false)  -- LOW
+    delay(1000)
+end
+```
+
+Compilar e fazer flash no Arduino UNO:
+
+```bash
+# Gera blink.rs na raiz do projeto
+cargo run -p tinylua-cli -- blink.lua
+
+# Copia para o binário da HAL e compila para AVR
+cp blink.rs crates/tinylua-hal/src/main.rs
+cd crates/tinylua-hal && cargo +nightly build --release && cd ../..
+
+# Gera o .hex
+avr-objcopy -O ihex -R .eeprom \
+    target/avr-none/release/tinylua-hal.elf blink.hex
+
+# Upload para Arduino UNO (ajuste a porta serial: /dev/ttyUSB0 no Linux)
+avrdude -c arduino -p atmega328p -P /dev/cu.usbmodem1201 -b 115200 \
+    -U flash:w:blink.hex
+```
+
+> Testado fisicamente em Arduino UNO (ATmega328P) — LED piscou conforme esperado.
 
 ---
 

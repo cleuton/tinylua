@@ -1,0 +1,1 @@
+/Users/cleuton/Documents/projetos/tinylua/target/avr-none/release/tinylua-hal.elf: /Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal/src/lib.rs /Users/cleuton/Documents/projetos/tinylua/crates/tinylua-hal/src/main.rs

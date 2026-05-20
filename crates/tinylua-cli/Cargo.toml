@@ -1,0 +1,9 @@
+[package]
+name    = "tinylua-cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tinylua-parser  = { path = "../tinylua-parser" }
+tinylua-sema    = { path = "../tinylua-sema" }
+tinylua-codegen = { path = "../tinylua-codegen" }
