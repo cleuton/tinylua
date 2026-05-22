@@ -1,3 +1,4 @@
+
 ![](logo.png)
 
 # TinyLua
@@ -119,9 +120,8 @@ To compile a Lua program for AVR:
 ```bash
 # 1. Generate .rs from .lua
 cargo run -p tinylua-cli -- blink.lua
-# → writes blink.rs next to blink.lua
 
-# 2. Copy the generated .rs to the HAL binary
+# 2. Copy the generated .rs to the HAL main.rs
 cp blink.rs crates/tinylua-hal/src/main.rs
 
 # 3. Compile for AVR (from the HAL directory)
@@ -189,18 +189,22 @@ end
 Compile and flash to an Arduino UNO:
 
 ```bash
-# Generate blink.rs at the project root
+# 1. Generate blink.rs at the project root
 cargo run -p tinylua-cli -- blink.lua
 
-# Copy to the HAL binary and compile for AVR
+# 2. Copy to the HAL main.rs
 cp blink.rs crates/tinylua-hal/src/main.rs
-cd crates/tinylua-hal && cargo +nightly build --release && cd ../..
 
-# Generate the .hex file
+# 3. Compile for AVR
+cd crates/tinylua-hal
+cargo +nightly build --release
+cd ../..
+
+# 4. Generate the .hex file
 avr-objcopy -O ihex -R .eeprom \
     target/avr-none/release/tinylua-hal.elf blink.hex
 
-# Flash to Arduino UNO (Linux: use /dev/ttyUSB0)
+# 5. Flash to Arduino UNO (Linux: use /dev/ttyUSB0)
 avrdude -c arduino -p atmega328p -P /dev/cu.usbmodem1201 -b 115200 \
     -U flash:w:blink.hex
 ```
@@ -449,6 +453,9 @@ let rust_src: String = generate(&stmts, &sema_out, &config);
 #![no_main]
 use tinylua_hal as hal;
 
+#[panic_handler]
+fn panic(_: &core::panic::PanicInfo) -> ! { loop {} }
+
 // user functions (Stmt::Function) — before main
 
 #[no_mangle]
@@ -476,13 +483,13 @@ pub extern "C" fn main() -> ! {
 
 | Lua | Rust |
 |-----|------|
-| `digitalRead(pin)` | `hal::digital_read(pin)` |
-| `digitalWrite(pin, val)` | `hal::digital_write(pin, val)` |
-| `analogRead(pin)` | `hal::analog_read(pin)` |
-| `analogWrite(pin, val)` | `hal::analog_write(pin, val as u8)` |
+| `digitalRead(pin)` | `hal::digital_read(pin as u8)` |
+| `digitalWrite(pin, val)` | `hal::digital_write(pin as u8, val)` |
+| `analogRead(pin)` | `hal::analog_read(pin as u8)` |
+| `analogWrite(pin, val)` | `hal::analog_write(pin as u8, val as u8)` |
 | `delay(ms)` | `hal::delay_ms(ms as u32)` |
-| `pinMode(pin, "OUTPUT")` | `hal::pin_mode(pin, hal::PinMode::Output)` |
-| `pinMode(pin, "INPUT")` | `hal::pin_mode(pin, hal::PinMode::Input)` |
+| `pinMode(pin, "OUTPUT")` | `hal::pin_mode(pin as u8, hal::PinMode::Output)` |
+| `pinMode(pin, "INPUT")` | `hal::pin_mode(pin as u8, hal::PinMode::Input)` |
 
 Casts (`as u8`, `as u32`) are emitted only at the intrinsic call site — all variables are always declared as `i32`.
 
@@ -510,18 +517,21 @@ end
 #![no_main]
 use tinylua_hal as hal;
 
+#[panic_handler]
+fn panic(_: &core::panic::PanicInfo) -> ! { loop {} }
+
 #[no_mangle]
 pub extern "C" fn main() -> ! {
     let mut LED_PIN: i32 = 13;
     let mut SENSOR_PIN: i32 = 2;
-    hal::pin_mode(LED_PIN, hal::PinMode::Output);
+    hal::pin_mode(LED_PIN as u8, hal::PinMode::Output);
     loop {
-        let mut state: i32 = hal::digital_read(SENSOR_PIN);
+        let mut state: i32 = hal::digital_read(SENSOR_PIN as u8);
         if (state == true) {
-            hal::digital_write(LED_PIN, true);
+            hal::digital_write(LED_PIN as u8, true);
             hal::delay_ms(500 as u32);
         } else {
-            hal::digital_write(LED_PIN, false);
+            hal::digital_write(LED_PIN as u8, false);
         }
     }
 }

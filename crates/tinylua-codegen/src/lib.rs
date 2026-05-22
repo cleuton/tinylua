@@ -34,6 +34,9 @@ pub fn generate(block: &[&Stmt<'_>], _sema: &SemaOutput, _config: &CodegenConfig
     out.push_str("#![no_main]\n");
     out.push_str("use tinylua_hal as hal;\n");
     out.push('\n');
+    out.push_str("#[panic_handler]\n");                                              // ← adicionar
+    out.push_str("fn panic(_: &core::panic::PanicInfo) -> ! { loop {} }\n");        // ← adicionar
+    out.push('\n'); 
     if !fns_buf.is_empty() {
         out.push_str(&fns_buf);
     }
@@ -85,11 +88,11 @@ impl Codegen {
     fn emit_call_expr(&self, name: &str, args: &[&Expr<'_>]) -> String {
         match name {
             "digitalRead" => format!(
-                "hal::digital_read({})",
+                "hal::digital_read({}  as u8)",
                 self.emit_expr(args[0])
             ),
             "digitalWrite" => format!(
-                "hal::digital_write({}, {})",
+                "hal::digital_write({}  as u8, {})",
                 self.emit_expr(args[0]),
                 self.emit_expr(args[1])
             ),
@@ -98,7 +101,7 @@ impl Codegen {
                 self.emit_expr(args[0])
             ),
             "analogWrite" => format!(
-                "hal::analog_write({}, {} as u8)",
+                "hal::analog_write({}, {})",
                 self.emit_expr(args[0]),
                 self.emit_expr(args[1])
             ),
@@ -107,7 +110,7 @@ impl Codegen {
                 self.emit_expr(args[0])
             ),
             "pinMode" => format!(
-                "hal::pin_mode({}, {})",
+                "hal::pin_mode({}  as u8, {})",
                 self.emit_expr(args[0]),
                 pinmode_str(args[1])
             ),
